@@ -1,0 +1,4 @@
+<!--pages/test/test.wxml-->
+<text>pages/test/test.wxml</text>
+<button bindtap='test'>测试</button>
+<image src='https://lovevivian.com/Wechat/upload/998.jpg'></image>

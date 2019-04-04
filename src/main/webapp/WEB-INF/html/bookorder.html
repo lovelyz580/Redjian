@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="lib/js/layui/css/layui.css" />
+	<script src="https://cdn.bootcss.com/Mock.js/1.0.1-beta3/mock-min.js"></script>
+	<script type="text/javascript" src="lib/js/layui/layui.js" charset="utf-8"></script>
+	<script src="lib/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+	<script src="lib/js/json2.js" type="text/javascript"></script>
+	<title>預定</title>
+</head>
+
+<body>
+<div class="layui-form" >
+	      <select name="pici" id="pici" lay-filter="role" >
+	        <option value="a">早餐</option>
+	        <option value="b">午餐</option>
+	           <option value="c" selected="selected">晚餐</option>
+	      </select>
+	<button type="button" class="layui-btn" id="addpeop">
+		预定
+	</button>
+</div>
+<table id="demo" lay-filter="test" lay-data="{id: 'iid'}"></table>
+<div style="text-align: center">
+	<div id="pricePaging"></div>
+</div>
+<script type="text/html" id="sweachurl">
+	<div class="layui-btn-container" >
+		<button class="layui-btn layui-btn-xs" lay-event="url" style="float: right" >我的预定</button>
+	</div>
+</script>
+
+
+<script type="text/html" id="userBarId">
+	<div class="layui-btn-container">
+		<!--<button class="layui-btn layui-btn-xs" lay-event="bookorder">预定</button>-->
+		<button class="layui-btn layui-btn-xs" lay-event="fabulous">赞</button>
+		<button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="bad">差</button>
+	</div>
+</script>
+<script src="./plugins/layui/layui.js" charset="utf-8"></script>
+<script src="https://cdn.bootcss.com/Mock.js/1.0.1-beta3/mock-min.js"></script>
+<script type="text/javascript" src="lib/js/layui/layui.js" charset="utf-8"></script>
+<script src="lib/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="lib/js/json2.js" type="text/javascript"></script>
+<script type="text/javascript" src="lib/js/jQuery.print.js"></script>
+<script>
+
+
+	$(function(){
+		$("#addpeop").click(function(){
+			var data={};
+			data.skind =  $('#pici').val();//选中的值早中晚
+			data.openid = "77582580"
+			data.snickname = "本田员工" //预定人员
+			$.ajax({
+				url : "dininghallbook/insertByXDiningHallBook",
+				type : "POST",
+				data : JSON.stringify(data),
+				contentType : "application/json;charset=UTF-8",
+				async : false,
+				success : function(result) {
+					console.log(result);
+					//重载表格
+					paging();
+					//关闭窗口
+					layer.close(layer.index);
+					//弹出提示
+					layer.msg(result.msg);
+				},
+				error : function() {
+					alert("error");
+				}
+			});
+
+		})
+
+	})
+	// 用于存储需要删除的id
+	var delId = [];
+	// 执行分页
+	paging();
+	// 执行分页的方法
+	function paging() {
+		layui.use([ 'laypage', 'table', 'layer'], function() {
+			var laypage = layui.laypage;
+			var table = layui.table;
+			var layer =layui.layer;
+			// 先将表格初始化
+			var result = fuzzyBuilding(1,100);
+			if(result.count==0){
+				layer.msg(result.msg);
+			}else{
+				result=replace(result);
+			}
+			// 生成表格
+			greatTabe(result);
+			laypage.render({
+				elem : 'pricePaging',
+				count : result.count,
+				jump : function(obj, first) {
+					if (!first) {
+						// 每次分页时需要存储数据的id(用于删除)
+						var checkStatus = table.checkStatus('priceid');
+						if (checkStatus.data.length > 0) {
+							for (var i = 0; i < checkStatus.data.length; i++) {
+								//alert(checkStatus.data);
+								delId.push(checkStatus.data[i].id);
+							}
+						}
+						// 分页生成表格时首次不执行，因为在上边已经初始化
+						result = fuzzyBuilding(obj.curr, obj.limit);
+						if(resylt.count==0){
+							layer.msg(result.msg);
+						}else{
+							result=replace(result);
+						}
+						greatTabe(result);
+					}
+				}
+			});
+		});
+	}
+	// 执行生成表格的方法
+	function greatTabe(result) {
+		console.log(result);
+		layui.use([ 'table', 'layer',  ], function() {
+			var table = layui.table;
+			var layer = layui.layer;
+
+			table.render({
+				elem : '#demo',
+				data : result.data,
+				page : false,
+				toolbar : '#sweachurl',
+				defaultToolbar: [],
+				cols : [ [
+					{
+						field : 'iid',
+						hide : 'true'
+					},
+					{
+						type : 'checkbox',
+						fixed : 'left'
+					},
+					{
+						field : 'skind',
+						hide : 'true',
+						title : "批次"
+					},
+					{
+						field : 'srecipe',
+						title : "菜名"
+					},
+					{
+						field : 'ddate',
+						hide : 'true',
+						title : '日期'
+					},
+					{
+						fixed: 'right',
+						align:'center',
+						toolbar: '#userBarId',
+						title : '管理'
+					}
+				] ]
+			});
+			//监听工具行
+			table.on('toolbar(test)', function(obj) {
+
+				switch (obj.event) {
+					case 'url':
+						window.location.href="mybook.html";
+				}
+			});
+			//监听工具行
+			table.on('tool(test)', function(obj) {
+				var checkStatus = obj.data;
+				if (checkStatus.skind =="早餐"){
+					checkStatus.skind="a";
+				} else if (checkStatus.skind =="午餐"){
+					checkStatus.skind="b";
+				} else {
+					checkStatus.skind="c";
+				}
+				switch (obj.event) {
+					case 'bookorder':
+						// 预定
+						layer.confirm('您确定要预定菜吗？', {
+							btn: ['确定', '取消'], //可以无限个按钮
+							//确定按钮
+							// 添加数据
+							btn1: function(index, layero){
+								var data={};
+								// data.reid=  checkStatus.iid   //菜单id
+								data.skind= checkStatus.skind;//批次
+								data.openid = "77582580"
+								data.snickname = "本田员工" //预定人员
+								$.ajax({
+									url : "dininghallbook/insertByXDiningHallBook",
+									type : "POST",
+									data : JSON.stringify(data),
+									contentType : "application/json;charset=UTF-8",
+									async : false,
+									success : function(result) {
+										console.log(result);
+										//重载表格
+										paging();
+										//关闭窗口
+										layer.close(layer.index);
+										//弹出提示
+										layer.msg(result.msg);
+									},
+									error : function() {
+										alert("error");
+									}
+								});
+							},
+							//取消按钮
+						});
+						break;
+					case 'fabulous':
+						// 点赞
+						layer.confirm('您确定要点击吗？', {
+							btn: ['确定', '取消'], //可以无限个按钮
+							//确定按钮
+							// 添加数据
+							btn1: function(index, layero){
+								var data={};
+								var reid = checkStatus.iid   //菜单id
+								var skind = checkStatus.skind;//批次
+								var ievalute = 1;
+								data.reid= reid
+								data.skind= skind
+								data.ievalute= ievalute
+								data.openid = "77582580"
+								data.snickname = "本田XRV"
+								$.ajax({
+									url : "dininghallevalute/insertByXDiningHallEvalute",
+									type : "POST",
+									data : JSON.stringify(data),
+									contentType : "application/json;charset=UTF-8",
+									async : false,
+									success : function(result) {
+										console.log(result);
+										//重载表格
+										paging();
+										//关闭窗口
+										layer.close(layer.index);
+										//弹出提示
+										layer.msg(result.msg);
+									},
+									error : function() {
+										alert("error");
+									}
+								});
+							},
+							//取消按钮
+						});
+						break;
+					case 'bad':
+						//delId.push(checkStatus.userid);
+						var buffBtn
+						layer.confirm('您确定要点击吗？', {
+							btn: ['确定', '取消'], //可以无限个按钮
+							//确定按钮
+							btn1: function(index, layero){
+								var data={};
+								var reid = checkStatus.iid   //菜单id
+								var skind = checkStatus.skind;//批次
+								var ievalute = 2;  //差评
+								data.reid= reid
+								data.skind= skind
+								data.ievalute= ievalute
+								data.openid = "77582580"
+								data.snickname = "本田XRV"
+								$.ajax({
+									url : "dininghallevalute/insertByXDiningHallEvalute",
+									type : "POST",
+									data : JSON.stringify(data),
+									contentType : "application/json;charset=UTF-8",
+									async : false,
+									success : function(result) {
+										console.log(result);
+										//重载表格
+										paging();
+										//关闭窗口
+										layer.close(layer.index);
+										//弹出提示
+										layer.msg(result.msg);
+									},
+									error : function() {
+										alert("error");
+									}
+								});
+							},
+							//取消按钮
+
+						});
+						break;
+
+				}
+			});
+
+		});
+	}
+	// 查询方法  模糊查询
+	function fuzzyBuilding(pagenumber, pagesize) {
+		var data = {};
+		data.pagenumber = pagenumber; // 当前页数(如果不进行分页，该条数据默认为-1)
+		data.pagesize = pagesize; // 每页的数据量
+		// 用于存放查询的结果
+		var resultList = {};
+		$.ajax({
+			url : "dininghall/selectByXDiningHall",
+			type : "POST",
+			async : false,
+			data : JSON.stringify(data),
+			contentType : "application/json;charset=UTF-8",
+			async : false,
+			success : function(result) {
+				console.log(result);
+				resultList=result
+			},
+			error : function() {
+				alert("error");
+			}
+		});
+
+		return resultList;
+	}
+	//替换字段的方法
+	function replace(result) {
+		for (var i = 0; i < result.data.length; i++) {
+			if (result.data[i].skind == 'a') {
+				result.data[i].skind = '早餐';
+			}else if (result.data[i].skind == 'b') {
+				result.data[i].skind = '午餐';
+			} else {
+				result.data[i].skind = '晚餐';
+			}
+			// result.data[i].ddate = Date(parseInt(result.data[i].ddate) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+
+		}
+		return result;
+	}
+</script>
+
+</body>
+</html>

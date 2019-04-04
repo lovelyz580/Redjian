@@ -1,0 +1,42 @@
+{
+  "pages": [
+  
+    "pages/login/login",
+    "pages/workhome/workhome",
+    "pages/personal/personal",
+    "pages/test/test"
+   
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#3f3066",
+    "navigationBarTitleText": "红笺伴侣",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#333",
+    "selectedColor": "#ed1b24",
+    "borderStyle": "black",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "selectedIconPath": "images/selectHome.png",
+        "iconPath": "images/home.png",
+        "pagePath": "pages/workhome/workhome",
+        "text": "首页"
+      },
+      {
+        "selectedIconPath": "images/my.png",
+        "iconPath": "images/selectMy.png",
+        "pagePath": "pages/personal/personal",
+        "text": "个人中心"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口"
+    }
+  },
+  "debug": true
+}

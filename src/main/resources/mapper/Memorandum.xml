@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wechat.bus.dao.mapper.Memorandum" >
+  <resultMap id="BaseResultMap" type="com.wechat.bus.entity.Memorandum" >
+    <id column="m_id" property="mId" jdbcType="VARCHAR" />
+    <result column="m_time" property="mTime" jdbcType="TIMESTAMP" />
+    <result column="m_name" property="mName" jdbcType="VARCHAR" />
+    <result column="m_uid" property="mUid" jdbcType="VARCHAR" />
+    <result column="m_formid" property="mFormid" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.wechat.bus.entity.Memorandum" extends="BaseResultMap" >
+    <result column="m_content" property="mContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    m_id, m_time, m_name, m_uid, m_formid,m_content
+  </sql>
+
+
+  <!--根据Memorandum实体添加-->
+  <insert id="insertByMemorandum"  parameterType="com.wechat.bus.entity.Memorandum" >
+    insert into memorandum
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mId != null" >
+        m_id,
+      </if>
+      <if test="mTime != null" >
+        m_time,
+      </if>
+      <if test="mName != null" >
+        m_name,
+      </if>
+      <if test="mUid != null" >
+        m_uid,
+      </if>
+      <if test="mFormid != null" >
+        m_formid,
+      </if>
+      <if test="mContent != null" >
+        m_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mId != null" >
+        #{mId,jdbcType=VARCHAR},
+      </if>
+      <if test="mTime != null" >
+        #{mTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mName != null" >
+        #{mName,jdbcType=VARCHAR},
+      </if>
+      <if test="mUid != null" >
+        #{mUid,jdbcType=VARCHAR},
+      </if>
+      <if test="mFormid != null" >
+        #{mFormid,jdbcType=VARCHAR},
+      </if>
+      <if test="mContent != null" >
+        #{mContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <!--根据Memorandum实体添加-->
+
+
+  <!--根据Memorandum实体更新-->
+  <update id="updateByMemorandum" parameterType="com.wechat.bus.entity.Memorandum" >
+    update memorandum
+    <set >
+      <if test="mTime != null" >
+        m_time = #{mTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mName != null" >
+        m_name = #{mName,jdbcType=VARCHAR},
+      </if>
+      <if test="mUid != null" >
+        m_uid = #{mUid,jdbcType=VARCHAR},
+      </if>
+      <if test="mFormid != null" >
+        m_formid = #{mFormid,jdbcType=VARCHAR},
+      </if>
+      <if test="mContent != null" >
+        m_content = #{mContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </update>
+  <!--根据Memorandum实体更新-->
+
+  <!--根据Memorandum实体单个查询-->
+  <select id="selectByMemorandumone" resultMap="BaseResultMap" parameterType="com.wechat.bus.entity.Memorandum" >
+    select
+    <include refid="Base_Column_List" />
+    from memorandum
+    <where>
+      <trim suffixOverrides="and|or">
+        <if test="mId != null">
+       AND m_id = #{mId,jdbcType=VARCHAR}
+        </if>
+        <if test="mTime != null" >
+        AND   m_time = #{mTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="mName != null" >
+          AND  m_name = #{mName,jdbcType=VARCHAR}
+        </if>
+        <if test="mUid != null" >
+          AND  m_uid = #{mUid,jdbcType=VARCHAR}
+        </if>
+        <if test="mFormid != null" >
+          AND  m_formid = #{mFormid,jdbcType=VARCHAR}
+        </if>
+        <if test="mContent != null" >
+          AND   m_content = #{mContent,jdbcType=LONGVARCHAR}
+        </if>
+      </trim>
+    </where>
+  </select>
+  <!--根据Memorandum实体单个查询-->
+
+  <!--根据Memorandum实体精准查询数量-->
+  <select id="selectCountByMemorandum" resultType="java.lang.Integer"  parameterType="com.wechat.bus.entity.Memorandum" >
+    select  COUNT(*)
+    from memorandum
+    <where>
+      <trim suffixOverrides="and|or">
+        <if test="mId != null">
+          AND m_id = #{mId,jdbcType=VARCHAR}
+        </if>
+        <if test="mTime != null" >
+          AND   m_time = #{mTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="mName != null" >
+          AND  m_name = #{mName,jdbcType=VARCHAR}
+        </if>
+        <if test="mUid != null" >
+          AND  m_uid = #{mUid,jdbcType=VARCHAR}
+        </if>
+        <if test="mFormid != null" >
+          AND  m_formid = #{mFormid,jdbcType=VARCHAR}
+        </if>
+        <if test="mContent != null" >
+          AND   m_content = #{mContent,jdbcType=LONGVARCHAR}
+        </if>
+      </trim>
+    </where>
+
+  </select>
+  <!--根据Memorandum实体精准查询数量-->
+
+  <!--根据Memorandum实体精准查询集合-->
+  <select id="selectByMemorandumList" resultMap="BaseResultMap" parameterType="com.wechat.bus.entity.Memorandum" >
+    select
+    <include refid="Base_Column_List" />
+    from memorandum
+    <where>
+      <trim suffixOverrides="and|or">
+        <if test="mId != null">
+          AND m_id = #{mId,jdbcType=VARCHAR}
+        </if>
+        <if test="mTime != null" >
+          AND   m_time = #{mTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="mName != null" >
+          AND  m_name = #{mName,jdbcType=VARCHAR}
+        </if>
+        <if test="mUid != null" >
+          AND  m_uid = #{mUid,jdbcType=VARCHAR}
+        </if>
+        <if test="mFormid != null" >
+          AND  m_formid = #{mFormid,jdbcType=VARCHAR}
+        </if>
+        <if test="mContent != null" >
+          AND   m_content = #{mContent,jdbcType=LONGVARCHAR}
+        </if>
+      </trim>
+    </where>
+    <!-- 分页 -->
+    <if test="pagenumber != -1">
+      limit #{pagenumber,jdbcType=INTEGER},
+      #{pagesize,jdbcType=INTEGER}
+    </if>
+  </select>
+  <!--根据Memorandum实体精准查询集合-->
+
+  <!--根据Memorandum实体模糊查询数量-->
+  <select id="selectCountBySelectData" resultType="java.lang.Integer"  parameterType="com.wechat.bus.entity.Memorandum" >
+    select
+    COUNT(*)
+    from memorandum
+    <where>
+      <trim suffixOverrides="and|or">
+        <if test="mId != null">
+          AND m_id = #{mId,jdbcType=VARCHAR}
+        </if>
+        <if test="mTime != null" >
+          AND    m_time = #{mTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="mName != null" >
+          AND  m_name like CONCAT('%', #{mName,jdbcType=VARCHAR},%)
+        </if>
+        <if test="mUid != null" >
+          AND  m_uid = #{mUid,jdbcType=VARCHAR}
+        </if>
+        <if test="mFormid != null" >
+          AND  m_formid = #{mFormid,jdbcType=VARCHAR}
+        </if>
+        <if test="mContent != null" >
+          AND   m_content like CONCAT('%', #{mContent,jdbcType=LONGVARCHAR},%)
+        </if>
+      </trim>
+    </where>
+  </select>
+  <!--根据Memorandum实体模糊查询数量-->
+
+  <!--根据Memorandum实体模糊查询集合-->
+  <select id="selectBySelectData" resultMap="BaseResultMap" parameterType="com.wechat.bus.entity.Memorandum" >
+    select
+    <include refid="Base_Column_List" />
+    from memorandum
+    <where>
+      <trim suffixOverrides="and|or">
+        <if test="mId != null">
+          AND m_id = #{mId,jdbcType=VARCHAR}
+        </if>
+        <if test="mTime != null" >
+          AND   m_time = #{mTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="mName != null" >
+          AND  m_name like CONCAT('%', #{mName,jdbcType=VARCHAR},%)
+        </if>
+        <if test="mUid != null" >
+          AND  m_uid = #{mUid,jdbcType=VARCHAR}
+        </if>
+        <if test="mFormid != null" >
+          AND  m_formid = #{mFormid,jdbcType=VARCHAR}
+        </if>
+        <if test="mContent != null" >
+          AND   m_content like CONCAT('%', #{mContent,jdbcType=LONGVARCHAR},%)
+        </if>
+      </trim>
+    </where>
+    <!-- 分页 -->
+    <if test="pagenumber != -1">
+      limit #{pagenumber,jdbcType=INTEGER},
+      #{pagesize,jdbcType=INTEGER}
+    </if>
+  </select>
+  <!--根据Memorandum实体模糊查询集合-->
+
+  <!--根据Memorandum实体假删除-->
+  <update id="updateByMemorandumDeleteState" parameterType="com.wechat.bus.entity.Memorandum" >
+    update memorandum
+    <set >
+      <if test="mTime != null" >
+        m_time = #{mTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mName != null" >
+        m_name = #{mName,jdbcType=VARCHAR},
+      </if>
+      <if test="mUid != null" >
+        m_uid = #{mUid,jdbcType=VARCHAR},
+      </if>
+      <if test="mFormid != null" >
+        m_formid = #{mFormid,jdbcType=VARCHAR},
+      </if>
+      <if test="mContent != null" >
+        m_content = #{mContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </update>
+  <!--根据Memorandum实体假删除-->
+
+  <!--根据Memorandum实体真删除-->
+  <delete id="deleteByMemorandum" parameterType="com.wechat.bus.entity.Memorandum" >
+    delete from memorandum
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </delete>
+  <!--根据Memorandum实体真删除-->
+
+  <!--根据Memorandum实体多条真删除-->
+  <delete id="deleteByidlist" parameterType="java.lang.String" >
+     delete from memorandum
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </delete>
+  <!--根据Memorandum实体多条真删除-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

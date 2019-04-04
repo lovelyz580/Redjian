@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>查询</title>
+		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user1-scalable=0" name="viewport">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<!-- <meta content="black" name="apple-mobile-web-app-status-bar-style"> -->
+		<meta content="telephone=no" name="format-detection">
+		<link rel="stylesheet" type="text/css" href="../plugins/layui/css/layui.css"/>
+		<link rel="stylesheet" type="text/css" href="css/main.css"/>
+		<style type="text/css">
+			th .layui-table-cell {text-align:center;}
+			.layui-table-body tbody{text-align: center;}
+		</style>
+	</head>
+	<body>
+		<div id="app" class="pos-re wid-1000 hei-1000">
+			<!-- 顶部标题 -->
+			<div class="pos-fix box-shadow-ccc wid-1000 fsiz-12 pad-l-10 pad-r-10 box-siz z-idx-10">
+				<span class="color-f43"><b>全国艺术特长生社会艺术水平</b></span>
+				<a href="index.html"><span class="lnh-40"><b>认证查询</b></span></a>
+				<span class="bor-l color-889 fsiz-12 pad-l-10 mar-l-10">查询结果</span>
+			</div>
+			<div class="hei-40">
+				<!-- 占位 -->
+			</div>
+			<!-- 结果表格 -->
+			<p class="color-889 fsiz-14 pad-l-10 lnh-50">已查询到<span class="color-f43">3条</span>考生信息</p>
+			<div class="layui-col-xs10 layui-col-xs-offset1">
+<<<<<<< .mine
+				<table id="demo" class="txta-c wid-1000"></table>
+			</div>
+			
+=======
+				<table id="demo" class="txta-c wid-1000" 
+				lay-filter="test" lay-data="{id:'roleid'}></table>
+			</div>
+			<div id="laypage"></div>
+>>>>>>> .r12
+			<!-- 底部 -->
+			<div class="pos-fix bottom-0 txta-c wid-1000 color-889-hf fsiz-12 lnh-40 z-idx-10">
+				@2019&nbsp;
+				<a href="" class="color-889-hf">文化部艺术发展中心</a>
+				&nbsp;冀ICP备00000000号
+			</div>
+		</div>
+		<script src="js/jquery-3.3.1.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- 		<script src="../plugins/layui/layui.js" type="text/javascript" charset="utf-8"></script> -->
+		<script type="text/javascript">
+			// document.getElementById('app').style.height = window.screen.height +'px'
+			/* layui.use('table', function(){
+			  var table = layui.table;
+			  
+			  //第一个实例
+			  table.render({
+				elem: '#demo'
+				,data:[
+					{username:'123',sex:'123',score:'445',wealth:'<a href="infor.html"><i class="layui-icon layui-icon-form"></i></a>'},
+					{username:'123',sex:'123',score:'445',wealth:'<a href="infor.html"><i class="layui-icon layui-icon-form"></i></a>'},
+					{username:'123',sex:'123',score:'445',wealth:'<a href="infor.html"><i class="layui-icon layui-icon-form"></i></a>'}
+				]
+				,cols: [[ //表头
+				  {field: 'username', title: '姓名'}
+				  ,{field: 'sex', title: '科目'}
+				  ,{field: 'score', title: '等级'}
+				  ,{field: 'wealth', title: '查看'}
+				]]
+			  });
+			  
+			});
+<<<<<<< .mine
+			 */
+			 
+		var cEquipCode;//设备编码
+	var cEquipName;//设备名称
+	var cSpec;//规格
+	var cModel;//型号
+	var cTechParam;//技术参数
+	var cPerIndex;//性能指标
+	var cCurCrcyle;//养护周期
+	var cState;//状态
+	var cCreateUser;//创建人
+	
+	
+	
+	var curPage=1;var pageSize=10;var counts=0;
+	var _otable;
+	var app, view, logic, data, chanel,gridObj;
+	var layui,form,table,sunmod,laypage,layer,laydate,upload;
+	var data11=[];
+	//chaxun   
+	var P = {curPage:curPage,pageSize:pageSize,data: {}};
+	var pp={success:"success",message:"成功",curPage:null,total:null,data: {}}
+	var entity={success:true,message:"成功",data: []};
+    //这里先定义了htmls。首先定义了一个请选择的选框。
+//	var htmls = '<option value="">请选择</option>';
+	//var _html="<div class='content'></div>";
+	var htmls = "<option value=''>请选择</option>";
+//select赋值	
+$.ajax({
+	url: "sysset/dept/getAll",
+	type: "post",
+	dataType : "json",
+	data : JSON.stringify(P),
+	async:false, 
+	contentType : "application/json;charset=UTF-8",
+	success: function (result) {
+		var kindData=result.data;
+		console.log(kindData);
+		for (var x in result.data) {
+			if(!result.data.hasOwnProperty(x))
+				continue;
+			htmls += "<option value = '" + kindData[x].name + "'>" + kindData[x].name + "</option>"		
+		}
+		$("#cuseDep").html(htmls);
+		$("#cKind").html(htmls);
+// 		form.render('select');
+	}
+});
+	
+	
+layui.use(['sunmod','layer', 'form','laypage', 'table','laydate','element','upload'], function(){
+	sunmod = layui.sunmod,element=layui.element,form = layui.form, table = layui.table, laydate = layui.laydate,
+	laypage = layui.laypage,upload = layui.upload,layer = layui.layer,$ = layui.jquery;
+		
+		//日期选择器
+		laydate.render({
+			elem: '#test112'
+			,type: 'datetime'
+			,value: new Date()
+		});
+		upload.render({
+			elem: '#test3'
+			,url: "sysset/ledger/inExcel"
+			,accept: 'file' //普通文件
+// 			,exts:'xls|xlsx'
+			,multiple: true
+			,done: function(res){
+			debugger;
+				if(res.success == true){
+				    layer.msg('导入成功', {icon: 1});
+				}else{
+				    layer.msg('导入失败', {icon: 2});
+				}
+				console.log(res)
+			}
+		});
+// 		reloads(table,data11);
+		//搜索 ----------------------------------------------- Begin-----------------------------------------------------------
+		var $ = layui.$, 
+		//active相当于一个对象
+		//finds是一个方法。
+		active ={
+			finds: function () {
+				cEquipCode = $('#cequipCode').val();//设备编码
+				cEquipName = $('#cequipName').val();//设备名称
+				cSpec = $('#cSpec').val();//规格
+				
+				cModel = $('#cModel').val();//型号
+				cTechParam = $('#cTechParam').val();//技术参数
+				cPerIndex = $('#cPerIndex').val();//性能指标
+				cCurCrcyle = $('#cCurCrcyle').val();//养护周期
+				
+				cState = $('#cState').val();//状态
+				cCreateUser = $('#cCreateUser').val();//创建人
+				P.data.cEquipCode=cEquipCode;
+				P.data.cEquipName=cEquipName;
+				P.data.cSpec=cSpec;
+				P.data.cModel=cModel;
+				P.data.cTechParam=cTechParam;
+				P.data.cPerIndex=cPerIndex;
+				P.data.cCurCrcyle=cCurCrcyle;
+				P.data.cState=cState;
+				P.data.cCreateUser=cCreateUser;
+				P.curPage=curPage;
+                P.pageSize=pageSize;
+				//执行重载
+// 				table.reload('demo',{
+// 				});
+				$.ajax({
+					url: "sysset/ledger/getPage",
+					type: "post",
+					dataType : "json",
+					data : JSON.stringify(P),
+					async:false, 
+					contentType : "application/json;charset=UTF-8",
+					success: function (result) {
+						
+						counts=result.count;
+						data11=result.data;
+						console.log(data11);
+						counts = result.total;
+						gridObj.data=data11;
+						table.render(gridObj);
+					}
+				});
+			},
+			resert:function () {
+			/* $('#cequipCode').val="";
+			$('#cequipName').val=""; */
+			$('#cequipCode').val("");
+			$('#cequipName').val("");
+			}
+		};
+		$('#finds').on('click', function () {
+			var type = $(this).data('type');
+			active[type] ? active[type].call(this) : '';
+		});
+		$('#resert').on('click', function () {
+			var type = $(this).data('type');
+			active[type] ? active[type].call(this) : '';
+		});
+	     table.on('tool(demo)', function(obj){ 
+        var data = obj.data,
+        layEvent = obj.event; 
+        $("#cEquipCode").val(data.cEquipCode);//回显数据 名称
+        $("#cEquipName").val(data.cEquipName);//回显数据 名称
+        $("#cKind").val(data.cKind);//回显数据 ID隐藏
+		$("#cSpec").val(data.cSpec);//回显数据 名称
+        $("#cTechParam").val(data.cTechParam);//回显数据 名称
+        if(layEvent === 'detail'){
+            layer.open({
+                type: 1, 
+                area: '1200px',
+                content: $('#addRole'),
+						btn: ['关闭'],
+						area: ['700px', '500px'], 
+						yes: function(index) {
+	$('form.layui-form').find('button[lay-filter=add]').click()					
+						}
+            });}})
+		//******************监听头部工具事件********************************8//
+		table.on('toolbar(demo)', function(obj){
+			var checkStatus = table.checkStatus(obj.config.id);
+			switch(obj.event){
+				case 'delete':
+					var checkStatus = table.checkStatus('demo'); 
+						data = checkStatus.data;
+					if(data.length==0){
+						layer.msg("您还没有选择数据！");
+					}else{
+	             for(var x in data){
+							var da={};
+							da.id=data[x].id;
+							da.cEquipCode=data[x].cEquipCode
+							entity.data.push(da);
+						} 
+						layer.confirm('真的删除行么', function(index){
+							$.ajax({
+							type: "post",
+							url: "sysset/ledger/delete",
+							contentType : 'application/json',
+							data: JSON.stringify(entity),
+							success: function (result) {
+								if(result.success){
+									//类型 默认灰色 1绿色√ 2红色x 3黄色？  4灰色锁  5红色委屈脸  6绿色开心脸  7黄色！
+									layer.alert('删除成功', {icon: 1});
+										location.reload();
+								}else{
+									//类型 默认灰色 1绿色√ 2红色x 3黄色？  4灰色锁  5红色委屈脸  6绿色开心脸  7黄色！
+									layer.alert('删除失败', {icon: 1});
+								}
+							},
+							error:function(result, status, xhr){
+							}
+							});
+						layer.close(index);
+						});
+					}			    
+				break;
+// 				case 'inExcel':
+// 				break;
+				case 'toExcel':
+					alert(1)
+					debugger
+					var data=checkStatus.data;
+					var form = document.createElement("form");
+						form.style.display = 'none';
+						form.action ="sysset/ledger/export";
+						form.method = "post";
+						document.body.appendChild(form);
+					var input = document.createElement("input");
+						input.type = "hidden";
+						input.name = "data";
+						input.id = "data";
+						input.class = "data";
+						input.value = JSON.stringify(data);
+						form.appendChild(input);
+						form.submit();
+						form.remove();
+				break;
+				case 'equipCollar':
+					window.location.href="10062.jsp";
+				break;
+					};
+				});
+	//*********************************************************8//
+	//视野等同于一个新的方法。
+	view=new function(){
+// 		self代指这个view方法。    
+		var self=this;
+		gridObj={
+// 			指定原始表格元素选择器（推荐id选择器）
+			elem: '#demo'
+// 	      工具  头部工具栏，还有一些layui自带的导出，打印  
+	        ,toolbar:'#toolbarDemo'
+// 		  容器高度 
+		    ,height: 380
+// 		  分页数量
+		  ,limit:120000
+// 		  容器宽度   
+// 		  设置表头//表头 
+		    ,cols: []
+		    ,done: function (res, curr, count) {
+// 		    应该在这里写分页的情况   
+		   			laypage.render({
+                        elem:'laypage'
+                        ,count:counts
+                        ,curr:curPage
+                        ,limit:pageSize
+                        ,layout: ['prev', 'page', 'next', 'skip','count','limit']
+                        ,jump:function (obj,first) {
+                            if(!first){
+                                curPage = obj.curr;
+                                pageSize = obj.limit;
+                          	    P.curPage=curPage;
+                                P.pageSize=pageSize;
+                                P.data.cEquipCode=cEquipCode;
+					P.data.cEquipName=cEquipName;
+					P.data.cSpec=cSpec;
+					P.data.cModel=cModel;
+					P.data.cTechParam=cTechParam;
+					P.data.cPerIndex=cPerIndex;
+					P.data.cCurCrcyle=cCurCrcyle;
+					P.data.cState=cState;
+					P.data.cCreateUser=cCreateUser;
+                                debugger;
+								$.ajax({
+									url:"sysset/ledger/getPage",
+									type : "POST",
+									async:false,
+									contentType : "application/json;charset=UTF-8",
+									data : JSON.stringify(P), 
+									success : function(result) {
+									console.log(result);
+									var data = result.data;
+									var datas = [];
+									if(P.pageSize>data.length){
+									for(var x=0;x<data.length;x++){
+										datas[x]=data[x];
+									}
+									}else{
+									for(var x=0;x<P.pageSize;x++){
+										datas[x]=data[x];
+									}
+									}
+								       pp.success=result.success;
+									   pp.message=result.message;
+									   pp.curPage=result.curPage;
+// 								       等同于result.count
+							    	   pp.total=result.total;
+							    	   counts = result.total;
+								       pp.data = datas;
+// 								       /*重新加载view*/
+										gridObj.data=pp.data;
+										table.render(gridObj);
+								 			},
+										});
+												}
+												}
+											})
+		      							}
+		  								 };
+		   
+		   self.setCol=function(){
+		      gridObj.cols.push(data11.getDataC());
+		   };
+		   self.setData=function(){
+		      gridObj.data=data11.getData(); 
+		   };
+		   self.render=function(){
+		      self.setCol();
+		      self.setData();
+ 		      table.render(gridObj);
+		   };
+	  };
+	  logic=new function(){
+	      var self=this;
+	      self.load=function(){
+	      data11.setDataC(
+	      [{type:'checkbox'} ,
+	      {field: 'cEquipCode', title: '设备编码',width:100,sort:'true'},
+	      {field: 'cEquipName', title: '设备名称',width:100,sort:'true'},
+	      {field: 'cPlace', title: '位置',width:100,sort:'true'},
+	      {field: 'cSpec', title: '规格',width:100,sort:'true'},
+	      {field: 'cModel', title: '型号',width:100,sort:'true'},
+	      {field: 'cTechParam', title: '技术参数',width:100,sort:'true'},
+	      {field: 'cPerIndex', title: '性能指标',width:100,sort:'true'},
+	      {field: 'cCurCrcyle', title: '养护周期',width:100,sort:'true'},
+	      {field: 'cState', title: '设备状态',width:100,sort:'true',templet:'#statusTpl9'},
+	      {field: 'dCreateTime', title: '创建时间',width:160,sort:'true'},
+	      {field: 'dUpdateTime', title: '修改时间',width:160,sort:'true'},
+	      {fixed: 'right', width: 99, align:'center', toolbar: '#barDemo'}]
+	      );
+	 
+    	var data= {};
+ 	    data.name = $("#userInput").val();
+	    data.id=null;
+  		$.ajax({
+			url:"sysset/ledger/getPage",
+			type : "POST",
+	 		data : JSON.stringify(P), 
+			contentType : "application/json;charset=UTF-8",
+			async:false,
+			success : function(result) {
+			var data = result.data;
+			console.log(data);
+			var datas = [];
+			if(P.pageSize>data.length){
+				for(var x=0;x<data.length;x++){
+					datas[x]=data[x];
+					}
+			}else{
+				for(var x=0;x<P.pageSize;x++){
+					datas[x]=data[x];
+					}
+			}
+             pp.success=result.success;
+		     pp.message=result.message;
+		     pp.curPage=result.curPage;
+		     pp.total=result.total;
+		     counts=result.total;
+             pp.data = datas;
+ 			},
+		});
+ 	    data11.setData(pp.data);     
+	    view.render();
+	      };
+	  };
+	  data11=new function(){
+	      var self=this;
+	      var _data=[];
+	      var _datac=[];
+	      self.setData=function(__data){
+	         _data=__data;
+	      };
+	      self.getData=function(){
+	         return _data;
+	      };
+	      self.setDataC=function(__data){
+	         _datac=__data;
+	      };
+	      self.getDataC=function(){
+	         return _datac;
+	      };
+	  };
+	  chanel=new function(){
+	  };   	  
+	 
+	 app=new function(){
+          var self=this;
+          self.init=function(){
+          };
+          self.start=function(){
+             logic.load();
+           };       
+         };  
+	app.start(); 
+	});
+ 
+/**
+获取时间yyyy-MM-dd HH:MM:SS
+*/
+
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var minute = date.getMinutes();
+    if(minute >= 0 && minute <= 9){
+    	minute = "0" + minute;
+    }
+    
+    var second = date.getSeconds();
+    if(second >= 0 && second <= 9){
+    	second = "0" + second;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + minute
+            + seperator2 + second;
+            
+            
+    return currentdate;
+}
+// function reloads(table, datas) {
+// 	_otable.data = datas;
+// 	table.render(_otable);
+// }		
+</script>
+</body>
+</html>=======
+			 */
+	var cEquipCode;//设备编码
+	var cEquipName;//设备名称
+	var cSpec;//规格
+	var cModel;//型号
+	var cTechParam;//技术参数
+	var cPerIndex;//性能指标
+	var cCurCrcyle;//养护周期
+	var cState;//状态
+	var cCreateUser;//创建人
+	
+	
+	
+	var curPage=1;var pageSize=10;var counts=0;
+	var _otable;
+	var app, view, logic, data, chanel,gridObj;
+	var layui,form,table,sunmod,laypage,layer,laydate,upload;
+	var data11=[];
+	//chaxun   
+	var P = {curPage:curPage,pageSize:pageSize,data: {}};
+	var pp={success:"success",message:"成功",curPage:null,total:null,data: {}}
+	var entity={success:true,message:"成功",data: []};
+    //这里先定义了htmls。首先定义了一个请选择的选框。
+//	var htmls = '<option value="">请选择</option>';
+	//var _html="<div class='content'></div>";
+	var htmls = "<option value=''>请选择</option>";
+//select赋值	
+/* $.ajax({
+	url: "sysset/dept/getAll",
+	type: "post",
+	dataType : "json",
+	data : JSON.stringify(P),
+	async:false, 
+	contentType : "application/json;charset=UTF-8",
+	success: function (result) {
+		var kindData=result.data;
+		console.log(kindData);
+		for (var x in result.data) {
+			if(!result.data.hasOwnProperty(x))
+				continue;
+			htmls += "<option value = '" + kindData[x].name + "'>" + kindData[x].name + "</option>"		
+		}
+		$("#cuseDep").html(htmls);
+		$("#cKind").html(htmls);
+// 		form.render('select');
+	}
+}); */
+	
+	
+layui.use([/* 'sunmod', *//* 'layer', */ 'form','laypage', 'table','laydate','element','upload'], function(){
+	/* sunmod = layui.sunmod, */element=layui.element,form = layui.form, table = layui.table, laydate = layui.laydate,
+	laypage = layui.laypage,upload = layui.upload/* ,layer = layui.layer */,$ = layui.jquery;
+		
+		//日期选择器
+		laydate.render({
+			elem: '#test112'
+			,type: 'datetime'
+			,value: new Date()
+		});
+		upload.render({
+			elem: '#test3'
+			,url: "sysset/ledger/inExcel"
+			,accept: 'file' //普通文件
+// 			,exts:'xls|xlsx'
+			,multiple: true
+			,done: function(res){
+			debugger;
+				if(res.success == true){
+				    layer.msg('导入成功', {icon: 1});
+				}else{
+				    layer.msg('导入失败', {icon: 2});
+				}
+				console.log(res)
+			}
+		});
+// 		reloads(table,data11);
+		//搜索 ----------------------------------------------- Begin-----------------------------------------------------------
+		var $ = layui.$, 
+		//active相当于一个对象
+		//finds是一个方法。
+		active ={
+			finds: function () {
+				cEquipCode = $('#cequipCode').val();//设备编码
+				cEquipName = $('#cequipName').val();//设备名称
+				cSpec = $('#cSpec').val();//规格
+				
+				cModel = $('#cModel').val();//型号
+				cTechParam = $('#cTechParam').val();//技术参数
+				cPerIndex = $('#cPerIndex').val();//性能指标
+				cCurCrcyle = $('#cCurCrcyle').val();//养护周期
+				
+				cState = $('#cState').val();//状态
+				cCreateUser = $('#cCreateUser').val();//创建人
+				P.data.cEquipCode=cEquipCode;
+				P.data.cEquipName=cEquipName;
+				P.data.cSpec=cSpec;
+				P.data.cModel=cModel;
+				P.data.cTechParam=cTechParam;
+				P.data.cPerIndex=cPerIndex;
+				P.data.cCurCrcyle=cCurCrcyle;
+				P.data.cState=cState;
+				P.data.cCreateUser=cCreateUser;
+				P.curPage=curPage;
+                P.pageSize=pageSize;
+				//执行重载
+// 				table.reload('demo',{
+// 				});
+				$.ajax({
+					url: "sysset/ledger/getPage",
+					type: "post",
+					dataType : "json",
+					data : JSON.stringify(P),
+					async:false, 
+					contentType : "application/json;charset=UTF-8",
+					success: function (result) {
+						
+						counts=result.count;
+						data11=result.data;
+						console.log(data11);
+						counts = result.total;
+						gridObj.data=data11;
+						table.render(gridObj);
+					}
+				});
+			},
+			resert:function () {
+			/* $('#cequipCode').val="";
+			$('#cequipName').val=""; */
+			$('#cequipCode').val("");
+			$('#cequipName').val("");
+			}
+		};
+		$('#finds').on('click', function () {
+			var type = $(this).data('type');
+			active[type] ? active[type].call(this) : '';
+		});
+		$('#resert').on('click', function () {
+			var type = $(this).data('type');
+			active[type] ? active[type].call(this) : '';
+		});
+	     table.on('tool(demo)', function(obj){ 
+        var data = obj.data,
+        layEvent = obj.event; 
+        $("#cEquipCode").val(data.cEquipCode);//回显数据 名称
+        $("#cEquipName").val(data.cEquipName);//回显数据 名称
+        $("#cKind").val(data.cKind);//回显数据 ID隐藏
+		$("#cSpec").val(data.cSpec);//回显数据 名称
+        $("#cTechParam").val(data.cTechParam);//回显数据 名称
+        if(layEvent === 'detail'){
+            layer.open({
+                type: 1, 
+                area: '1200px',
+                content: $('#addRole'),
+						btn: ['关闭'],
+						area: ['700px', '500px'], 
+						yes: function(index) {
+	$('form.layui-form').find('button[lay-filter=add]').click()					
+						}
+            });}})
+		//******************监听头部工具事件********************************8//
+		table.on('toolbar(demo)', function(obj){
+			var checkStatus = table.checkStatus(obj.config.id);
+			switch(obj.event){
+				case 'delete':
+					var checkStatus = table.checkStatus('demo'); 
+						data = checkStatus.data;
+					if(data.length==0){
+						layer.msg("您还没有选择数据！");
+					}else{
+	             for(var x in data){
+							var da={};
+							da.id=data[x].id;
+							da.cEquipCode=data[x].cEquipCode
+							entity.data.push(da);
+						} 
+						layer.confirm('真的删除行么', function(index){
+							$.ajax({
+							type: "post",
+							url: "sysset/ledger/delete",
+							contentType : 'application/json',
+							data: JSON.stringify(entity),
+							success: function (result) {
+								if(result.success){
+									//类型 默认灰色 1绿色√ 2红色x 3黄色？  4灰色锁  5红色委屈脸  6绿色开心脸  7黄色！
+									layer.alert('删除成功', {icon: 1});
+										location.reload();
+								}else{
+									//类型 默认灰色 1绿色√ 2红色x 3黄色？  4灰色锁  5红色委屈脸  6绿色开心脸  7黄色！
+									layer.alert('删除失败', {icon: 1});
+								}
+							},
+							error:function(result, status, xhr){
+							}
+							});
+						layer.close(index);
+						});
+					}			    
+				break;
+// 				case 'inExcel':
+// 				break;
+				case 'toExcel':
+					alert(1)
+					debugger
+					var data=checkStatus.data;
+					var form = document.createElement("form");
+						form.style.display = 'none';
+						form.action ="sysset/ledger/export";
+						form.method = "post";
+						document.body.appendChild(form);
+					var input = document.createElement("input");
+						input.type = "hidden";
+						input.name = "data";
+						input.id = "data";
+						input.class = "data";
+						input.value = JSON.stringify(data);
+						form.appendChild(input);
+						form.submit();
+						form.remove();
+				break;
+				case 'equipCollar':
+					window.location.href="10062.jsp";
+				break;
+					};
+				});
+	//*********************************************************8//
+	//视野等同于一个新的方法。
+	view=new function(){
+// 		self代指这个view方法。    
+		var self=this;
+		gridObj={
+// 			指定原始表格元素选择器（推荐id选择器）
+			elem: '#demo'
+// 	      工具  头部工具栏，还有一些layui自带的导出，打印  
+	        ,toolbar:'#toolbarDemo'
+// 		  容器高度 
+		    ,height: 380
+// 		  分页数量
+		  ,limit:120000
+// 		  容器宽度   
+// 		  设置表头//表头 
+		    ,cols: []
+		    ,done: function (res, curr, count) {
+// 		    应该在这里写分页的情况   
+		   			laypage.render({
+                        elem:'laypage'
+                        ,count:counts
+                        ,curr:curPage
+                        ,limit:pageSize
+                        ,layout: ['prev', 'page', 'next', 'skip','count','limit']
+                        ,jump:function (obj,first) {
+                            if(!first){
+                                curPage = obj.curr;
+                                pageSize = obj.limit;
+                          	    P.curPage=curPage;
+                                P.pageSize=pageSize;
+                                P.data.cEquipCode=cEquipCode;
+					P.data.cEquipName=cEquipName;
+					P.data.cSpec=cSpec;
+					P.data.cModel=cModel;
+					P.data.cTechParam=cTechParam;
+					P.data.cPerIndex=cPerIndex;
+					P.data.cCurCrcyle=cCurCrcyle;
+					P.data.cState=cState;
+					P.data.cCreateUser=cCreateUser;
+                                debugger;
+								$.ajax({
+									url:"sysset/ledger/getPage",
+									type : "POST",
+									async:false,
+									contentType : "application/json;charset=UTF-8",
+									data : JSON.stringify(P), 
+									success : function(result) {
+									console.log(result);
+									var data = result.data;
+									var datas = [];
+									if(P.pageSize>data.length){
+									for(var x=0;x<data.length;x++){
+										datas[x]=data[x];
+									}
+									}else{
+									for(var x=0;x<P.pageSize;x++){
+										datas[x]=data[x];
+									}
+									}
+								       pp.success=result.success;
+									   pp.message=result.message;
+									   pp.curPage=result.curPage;
+// 								       等同于result.count
+							    	   pp.total=result.total;
+							    	   counts = result.total;
+								       pp.data = datas;
+// 								       /*重新加载view*/
+										gridObj.data=pp.data;
+										table.render(gridObj);
+								 			},
+										});
+												}
+												}
+											})
+		      							}
+		  								 };
+		   
+		   self.setCol=function(){
+		      gridObj.cols.push(data11.getDataC());
+		   };
+		   self.setData=function(){
+		      gridObj.data=data11.getData(); 
+		   };
+		   self.render=function(){
+		      self.setCol();
+		      self.setData();
+ 		      table.render(gridObj);
+		   };
+	  };
+	  logic=new function(){
+	      var self=this;
+	      self.load=function(){
+	      data11.setDataC(
+	      [{type:'checkbox'} ,
+	      {field: 'cEquipCode', title: '设备编码',width:100,sort:'true'},
+	      {field: 'cEquipName', title: '设备名称',width:100,sort:'true'},
+	      {field: 'cPlace', title: '位置',width:100,sort:'true'},
+	      {field: 'cSpec', title: '规格',width:100,sort:'true'},
+	      {field: 'cModel', title: '型号',width:100,sort:'true'},
+	      {field: 'cTechParam', title: '技术参数',width:100,sort:'true'},
+	      {field: 'cPerIndex', title: '性能指标',width:100,sort:'true'},
+	      {field: 'cCurCrcyle', title: '养护周期',width:100,sort:'true'},
+	      {field: 'cState', title: '设备状态',width:100,sort:'true',templet:'#statusTpl9'},
+	      {field: 'dCreateTime', title: '创建时间',width:160,sort:'true'},
+	      {field: 'dUpdateTime', title: '修改时间',width:160,sort:'true'},
+	      {fixed: 'right', width: 99, align:'center', toolbar: '#barDemo'}]
+	      );
+	 
+    	var data= {};
+ 	    data.name = $("#userInput").val();
+	    data.id=null;
+  		$.ajax({
+			url:"#",
+			type : "GET",
+	 		data : JSON.stringify(P), 
+			contentType : "application/json;charset=UTF-8",
+			async:false,
+			success : function(result) {
+			var data = result.data;
+			console.log(data);
+			var datas = [];
+			if(P.pageSize>data.length){
+				for(var x=0;x<data.length;x++){
+					datas[x]=data[x];
+					}
+			}else{
+				for(var x=0;x<P.pageSize;x++){
+					datas[x]=data[x];
+					}
+			}
+             pp.success=result.success;
+		     pp.message=result.message;
+		     pp.curPage=result.curPage;
+		     pp.total=result.total;
+		     counts=result.total;
+             pp.data = datas;
+ 			},
+		});
+ 	    data11.setData(pp.data);     
+	    view.render();
+	      };
+	  };
+	  data11=new function(){
+	      var self=this;
+	      var _data=[];
+	      var _datac=[];
+	      self.setData=function(__data){
+	         _data=__data;
+	      };
+	      self.getData=function(){
+	         return _data;
+	      };
+	      self.setDataC=function(__data){
+	         _datac=__data;
+	      };
+	      self.getDataC=function(){
+	         return _datac;
+	      };
+	  };
+	  chanel=new function(){
+	  };   	  
+	 
+	 app=new function(){
+          var self=this;
+          self.init=function(){
+          };
+          self.start=function(){
+             logic.load();
+           };       
+         };  
+	app.start(); 
+	});
+ 
+/**
+获取时间yyyy-MM-dd HH:MM:SS
+*/
+
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var minute = date.getMinutes();
+    if(minute >= 0 && minute <= 9){
+    	minute = "0" + minute;
+    }
+    
+    var second = date.getSeconds();
+    if(second >= 0 && second <= 9){
+    	second = "0" + second;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + minute
+            + seperator2 + second;
+            
+            
+    return currentdate;
+}
+// function reloads(table, datas) {
+// 	_otable.data = datas;
+// 	table.render(_otable);
+// }		
+</script>
+</body>
+</html>
+>>>>>>> .r12

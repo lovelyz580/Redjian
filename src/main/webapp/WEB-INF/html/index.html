@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>点餐管理系统</title>
+  <link rel="stylesheet" href="./plugins/layui/css/layui.css" media="all" />
+  <link rel="stylesheet" href="./plugins/font-awesome/css/font-awesome.min.css" media="all" />
+  <link rel="stylesheet" href="./src/css/app.css" media="all" />
+  <link rel="stylesheet" href="./src/css/themes/default.css" media="all" id="skin" kit-skin />
+  <style>
+		body html{ overflow:hidden}
+		.kit-tab .kit-tab-tool {right: -1px;}
+		.kit-tab .layui-tab-title {width: calc(100% - 61px);}
+		.kit-tab .kit-tab-tool-body {right: -1px}
+		.kit-layout-admin .layui-body {bottom: 29px;overflow-y:hidden}
+		.kit-tab .layui-tab-content {padding-right: 0;}
+		iframe body{padding-right: 20px;}
+	</style>
+</head>
+<body class="kit-theme">
+  <div class="layui-layout layui-layout-admin kit-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo">后台管理系统</div>
+      <div class="layui-logo kit-logo-mobile"></div>
+      <ul class="layui-nav layui-layout-right kit-nav">
+        <li class="layui-nav-item">
+            用户XXX已登录
+        </li>
+        
+        <li class="layui-nav-item"><a href="login.html"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
+      </ul>
+    </div>
+    <img src="000.jpg">
+    <div class="layui-side layui-bg-black kit-side">
+      <div class="layui-side-scroll">
+        <div class="kit-side-fold"><i class="fa fa-navicon" aria-hidden="true"></i></div>
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-filter="kitNavbar" kit-navbar>
+          <li class="layui-nav-item layui-nav-itemed">
+            <a class="" href="javascript:;"><i class="layui-icon layui-icon-friends" aria-hidden="true"></i><span> 主管理员</span></a>
+
+            <dl class="layui-nav-child">
+              <dd>
+                <a href="javascript:;" data-url="menus.html" data-icon="&#xe66a;" data-title="菜单管理" kit-target data-id='3'><i class="layui-icon layui-icon-theme" aria-hidden="true"></i><span> 菜单管理</span></a>
+              </dd>
+              <dd>
+                <a href="javascript:;" data-url="order.html" data-icon="&#xe770;" data-title="今日点餐管理" kit-target data-id='2'><i class="layui-icon layui-icon-user1" aria-hidden="true"></i><span> 今日点餐管理</span></a>
+              </dd>
+              <dd>
+                <a href="javascript:;" kit-target data-options="{url:'dianzan.html',icon:'&#xe656;',title:'今日点赞管理',id:'1'}">
+                  <i class="layui-icon layui-icon-template-1"></i><span> 今日点赞管理</span></a>
+              </dd>
+
+              <!--<dd>-->
+                <!--<a href="javascript:;" data-url="level.html" data-icon="&#xe628;" data-title="考试级别管理" kit-target data-id='4'><i class="layui-icon">&#xe628;</i><span> 考试级别管理</span></a>-->
+              <!--</dd>-->
+              <!--<dd>-->
+              <!--<dd>-->
+                <!--<a href="javascript:;" data-url="score.html" data-icon="&#xe62a;" data-title="成绩分档" kit-target data-id='5'><i class="layui-icon">&#xe62a;</i><span> 成绩分档</span></a>-->
+              <!--</dd>-->
+              <!--<dd>-->
+                <!--<a href="javascript:;" data-url="exam.html" data-icon="&#xe611;" data-title="考试信息查看" kit-target data-id='6'><i class="layui-icon">&#xe611;</i><span> 考试信息查看</span></a>-->
+              <!--</dd>-->
+              </li>
+        </ul>
+      </div>
+    </div>
+    <div class="layui-body" id="container">
+      <!-- 内容主体区域 -->
+      <div style="padding: 15px;"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63e;</i> 请稍等...</div>
+    </div>
+
+    <div class="layui-footer">
+      <!-- 底部固定区域 -->
+      2019 &copy;
+      <a href="http://www.ncitysoft.com/">网城软件</a>
+    </div>
+  </div>
+  <script src="./plugins/layui/layui.js"></script>
+  <script>
+    var message;
+    layui.config({
+      base: 'src/js/',
+      version: '1.0.1'
+    }).use(['app', 'message'], function() {
+      var app = layui.app,
+        $ = layui.jquery,
+        layer = layui.layer;
+      //将message设置为全局以便子页面调用
+      message = layui.message;
+      //主入口
+      app.set({
+        type: 'iframe'
+      }).init();
+      $('#pay').on('click', function() {
+        layer.open({
+          title: false,
+          type: 1,
+          content: '<img src="/src/images/pay.png" />',
+          area: ['500px', '250px'],
+          shadeClose: true
+        });
+      });
+      $('dl.skin > dd').on('click', function() {
+        var $that = $(this);
+        var skin = $that.children('a').data('skin');
+        switchSkin(skin);
+      });
+      var setSkin = function(value) {
+          layui.data('kit_skin', {
+            key: 'skin',
+            value: value
+          });
+        },
+        getSkinName = function() {
+          return layui.data('kit_skin').skin;
+        },
+        switchSkin = function(value) {
+          var _target = $('link[kit-skin]')[0];
+          _target.href = _target.href.substring(0, _target.href.lastIndexOf('/') + 1) + value + _target.href.substring(_target.href.lastIndexOf('.'));
+          setSkin(value);
+
+        },
+        initSkin = function() {
+          var skin = getSkinName();
+          switchSkin(skin === undefined ? 'default' : skin);
+        }();
+    });
+  </script>
+</body>
+</html>
