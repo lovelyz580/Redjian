@@ -1,0 +1,15 @@
+装之梦（公众号）
+AppID：wx9248ff38681c4d52
+AppSecret：d75b6b76b252b6e3c7594ba82d9324f7
+
+
+装之梦（小程序）
+AppID(小程序ID) wxe08feaf00231abb8
+AppSecret(小程序密钥) 41498f80c03bf69b3d6093b93d07b28d
+Openid(用户的openid):"oiYnl5XYV8VXi2zaV4a5B0OdV0pQ"
+
+
+
+红笺伴侣（小程序）
+AppID(小程序ID) wx8b47dd641f535372
+AppSecret(小程序密钥) 576e218e059bdc8b3177b37d51292d1d
