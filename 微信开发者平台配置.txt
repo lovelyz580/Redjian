@@ -1,15 +1,15 @@
-װ֮�Σ����ںţ�
-AppID��wx9248ff38681c4d52
-AppSecret��d75b6b76b252b6e3c7594ba82d9324f7
+装之梦（公众号）
+AppID：wx
+AppSecret：d75
 
 
-װ֮�Σ�С����
-AppID(С����ID) wxe08feaf00231abb8
-AppSecret(С������Կ) 41498f80c03bf69b3d6093b93d07b28d
-Openid(�û���openid):"oiYnl5XYV8VXi2zaV4a5B0OdV0pQ"
+装之梦（小程序）
+AppID(小程序ID) wxe0
+AppSecret(小程序密钥) 41498f
+Openid(用户的openid):"oiYn
 
 
 
-�����£�С����
-AppID(С����ID) wx8b47dd641f535372
-AppSecret(С������Կ) 576e218e059bdc8b3177b37d51292d1d
+红笺伴侣（小程序）
+AppID(小程序ID) wx8b47
+AppSecret(小程序密钥) 576e218
