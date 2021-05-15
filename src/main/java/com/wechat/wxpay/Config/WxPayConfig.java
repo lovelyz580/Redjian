@@ -7,15 +7,15 @@ package com.wechat.wxpay.Config;
  */
 public class WxPayConfig {
     //小程序appid
-    public static final String appid = "wxe08feaf00231abb8"; //装之梦
-    //  public static final String appid = "wx8b47dd641f535372";  //红笺伴侣
+    public static final String appid = "wxe08feabb8"; //装之梦
+    //  public static final String appid = "wx8b47d5372";  //红笺伴侣
     //小程序密钥
-   public static final String appkey = "41498f80c03bf69b3d6093b93d07b28d";//装之梦
-    //  public static final String appkey = "576e218e059bdc8b3177b37d51292d1d";//红笺伴侣
+   public static final String appkey = "41498f80c03bfb93d07b28d";//装之梦
+    //  public static final String appkey = "576e218e051292d1d";//红笺伴侣
     //微信支付的商户id
-    public static final String mch_id = "1513930121";
+    public static final String mch_id = "15";
     //微信支付的商户密钥
-    public static final String mch_key = "pWqm7wNeb4cuTco8cyOxce1jnyv2nstg";
+    public static final String mch_key = "pg";
     //支付成功后的服务器回调url
     //****
     //支付成功后的服务器回调url
